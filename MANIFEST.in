@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include postal_hub *.css
+recursive-include postal_hub *.csv
+recursive-include postal_hub *.html
+recursive-include postal_hub *.ico
+recursive-include postal_hub *.js
+recursive-include postal_hub *.json
+recursive-include postal_hub *.md
+recursive-include postal_hub *.png
+recursive-include postal_hub *.py
+recursive-include postal_hub *.svg
+recursive-include postal_hub *.txt
+recursive-exclude postal_hub *.pyc
