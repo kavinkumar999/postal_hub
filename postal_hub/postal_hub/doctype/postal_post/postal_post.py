@@ -4,6 +4,8 @@
 
 from __future__ import unicode_literals
 import frappe
+from instabot import Bot
+from postal_hub import posting
 from frappe.model.document import Document
 
 class PostalPost(Document):
@@ -22,7 +24,8 @@ def insert_data():
 def data_to_field(doc,image):
 	get_doc = frappe.get_doc("Postal Post",doc)
 	file_doc = frappe.get_doc("File", {"file_url":f'/private/files/{image}.jpg'})
-	new_doc.post_image = file_doc.file_url
+	get_doc.post_image = file_doc.file_url
+	posting(doc,get_doc.caption)
 	get_doc.save()
 
 @frappe.whitelist() # Created the field and return to the primary key	
@@ -32,9 +35,9 @@ def created_doc(caption):
 	new_doc.save()
 	return new_doc.name
 
-@frappe.whitelist()
-def posting(doc):
-	print("post")
+
+	
+
 	
 	
 
