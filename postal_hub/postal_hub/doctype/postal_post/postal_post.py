@@ -23,20 +23,28 @@ def insert_data():
 @frappe.whitelist()  # Add the image from the attachment to the field
 def data_to_field(doc,image):
 	get_doc = frappe.get_doc("Postal Post",doc)
-	file_doc = frappe.get_doc("File", {"file_url":f'/private/files/{image}.jpg'})
+	file_doc = frappe.get_doc("File", {"file_url":f'/private/files/{image}'})
 	get_doc.post_image = file_doc.file_url
-	posting(doc,get_doc.caption)
+	# print(file_doc.file_url)
+	# posting(doc,get_doc.caption)
 	get_doc.save()
 
 @frappe.whitelist() # Created the field and return to the primary key	
-def created_doc(caption):
+def created_doc(caption, facebook, insta, tweet):
 	new_doc = frappe.new_doc("Postal Post")
 	new_doc.caption = caption
+	new_doc.facebook = 1 if facebook else 0
+	new_doc.instagram = 1 if facebook else 0
+	new_doc.twitter =  1 if facebook else 0
 	new_doc.save()
-	return new_doc.name
+	return str(new_doc.name)
 
 
-	
+@frappe.whitelist()
+def image(docname):
+	mode = frappe.get_doc("Postal Post","d4a93411b6")
+	print(mode.post_image)
+	return mode.post_image
 
 	
 	
