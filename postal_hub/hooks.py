@@ -90,7 +90,15 @@ app_license = "MIT"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
+scheduler_events = {
+    "cron": {
+		"*/30 * * * *": [
+            "postal_hub.__init__.scheduledpost"
+		]
+	},
+
+}
+
 # 	"all": [
 # 		"postal_hub.tasks.all"
 # 	],
@@ -106,7 +114,6 @@ app_license = "MIT"
 # 	"monthly": [
 # 		"postal_hub.tasks.monthly"
 # 	]
-# }
 
 # Testing
 # -------
