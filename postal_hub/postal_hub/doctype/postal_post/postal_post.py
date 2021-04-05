@@ -7,7 +7,8 @@ import frappe
 from instabot import Bot
 from postal_hub import posting
 from frappe.model.document import Document
-
+from datetime import timedelta
+from datetime import datetime
 class PostalPost(Document):
 	pass
 
@@ -30,12 +31,17 @@ def data_to_field(doc,image):
 	get_doc.save()
 
 @frappe.whitelist() # Created the field and return to the primary key	
-def created_doc(caption, facebook, insta, tweet):
+def created_doc(caption, facebook, insta, tweet, future, hrs):
 	new_doc = frappe.new_doc("Postal Post")
 	new_doc.caption = caption
-	new_doc.facebook = 1 if facebook else 0
-	new_doc.instagram = 1 if facebook else 0
-	new_doc.twitter =  1 if facebook else 0
+	detail =  frappe.new_doc("Post Details")
+	detail.facebook = 1 if facebook == "1" else 0
+	detail.instagram = 1 if insta == "1" else 0
+	detail.twitter =  1 if tweet == "1" else 0
+	detail.save()
+	new_doc.detail = detail.name
+	new_doc.is_complete = 1 if future == "0" else 0
+	new_doc.post_time = datetime.strptime(frappe.utils.now(), '%Y-%m-%d %H:%M:%S.%f') + timedelta(hours = 0 if new_doc.is_complete == 1 else int(hrs))
 	new_doc.save()
 	return str(new_doc.name)
 
@@ -46,6 +52,34 @@ def image(docname):
 	print(mode.post_image)
 	return mode.post_image
 
-	
+
+@frappe.whitelist()
+def login():
+	return "success"
 	
 
+@frappe.whitelist()
+def data():
+	result = frappe.db.sql("select * from `tabPostal Post` as post inner join `tabPost Details` as media on media.name=post.detail")
+	return result
+
+
+@frappe.whitelist()
+def stackpost():
+	stack = frappe.db.sql("select pp.post_image,pp.caption, pp.is_complete,pd.facebook,pd.instagram,pd.twitter,pp.post_time from `tabPostal Post` as pp inner join `tabPost Details` as pd on pp.detail = pd.name",as_list=1)
+	for s in range(0,len(stack)):
+		print(type(frappe.utils.now()))
+		print(type(stack[s][6]))
+		now = datetime.strptime(frappe.utils.now(), '%Y-%m-%d %H:%M:%S.%f')
+		then = stack[s][6]
+		print(type(now))
+		print(type(then))
+		balance = now - then
+		bal_second = balance.total_seconds()
+		stack[s][6] = divmod(bal_second,3600)[0]
+	return stack
+
+
+@frappe.whitelist()
+def post(docname):
+	return "success"

@@ -8,9 +8,9 @@
   "post_image",
   "caption",
   "amended_from",
-  "facebook",
-  "instagram",
-  "twitter"
+  "detail",
+  "is_complete",
+  "post_time"
  ],
  "fields": [
   {
@@ -35,26 +35,25 @@
    "read_only": 1
   },
   {
-   "default": "0",
-   "fieldname": "facebook",
-   "fieldtype": "Check",
-   "label": "Facebook"
+   "fieldname": "detail",
+   "fieldtype": "Link",
+   "label": "Detail",
+   "options": "Post Details"
   },
   {
    "default": "0",
-   "fieldname": "instagram",
+   "fieldname": "is_complete",
    "fieldtype": "Check",
-   "label": "Instagram"
+   "label": "is_complete"
   },
   {
-   "default": "0",
-   "fieldname": "twitter",
-   "fieldtype": "Check",
-   "label": "Twitter"
+   "fieldname": "post_time",
+   "fieldtype": "Datetime",
+   "label": "Post time"
   }
  ],
  "links": [],
- "modified": "2021-03-17 18:04:56.463650",
+ "modified": "2021-03-28 13:01:00.860485",
  "modified_by": "Administrator",
  "module": "Postal Hub",
  "name": "Postal Post",
