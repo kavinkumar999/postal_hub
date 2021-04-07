@@ -9,8 +9,12 @@ from postal_hub import posting
 from frappe.model.document import Document
 from datetime import timedelta
 from datetime import datetime
+from postal_hub.postal_hub.doctype.postal_post import url , hashtag , token
+import requests
+
 class PostalPost(Document):
 	pass
+
 
 @frappe.whitelist()
 def get_data():
@@ -68,12 +72,8 @@ def data():
 def stackpost():
 	stack = frappe.db.sql("select pp.post_image,pp.caption, pp.is_complete,pd.facebook,pd.instagram,pd.twitter,pp.post_time from `tabPostal Post` as pp inner join `tabPost Details` as pd on pp.detail = pd.name",as_list=1)
 	for s in range(0,len(stack)):
-		print(type(frappe.utils.now()))
-		print(type(stack[s][6]))
 		now = datetime.strptime(frappe.utils.now(), '%Y-%m-%d %H:%M:%S.%f')
 		then = stack[s][6]
-		print(type(now))
-		print(type(then))
 		balance = now - then
 		bal_second = balance.total_seconds()
 		stack[s][6] = divmod(bal_second,3600)[0]
@@ -82,4 +82,19 @@ def stackpost():
 
 @frappe.whitelist()
 def post(docname):
+
+	page = frappe.get_doc("Postal Post",docname)
+
+	session = frappe.get_doc("Post Details",post.detail)
+	social = []
+	if session.twitter == 1:
+		social.append("twitter")
+	if session.facebook == 1:
+		social.append("facebook")
+
+	payload = {"post": page.caption + hashtag,"platforms": social,}
+	headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {token}'}
+	r = requests.post(url, 
+          json=payload, 
+          headers=headers)
 	return "success"
