@@ -4,3 +4,4 @@
 *.swp
 tags
 postal_hub/docs/current
+postal_hub/postal_hub/doctype/postal_post/__init__.py
