@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from postal_hub.postal_hub.doctype import facebook , twitter, insta 
+# from postal_hub.postal_hub.doctype import facebook , twitter, insta 
 import frappe
 from postal_hub.postal_hub.doctype.postal_post.postal_post import post
 __version__ = '0.0.1'
