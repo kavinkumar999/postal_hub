@@ -5,7 +5,6 @@
 from __future__ import unicode_literals
 import frappe
 from instabot import Bot
-from postal_hub import posting
 from frappe.model.document import Document
 from datetime import timedelta
 from datetime import datetime
@@ -70,13 +69,14 @@ def data():
 
 @frappe.whitelist()
 def stackpost():
-	stack = frappe.db.sql("select pp.post_image,pp.caption, pp.is_complete,pd.facebook,pd.instagram,pd.twitter,pp.post_time from `tabPostal Post` as pp inner join `tabPost Details` as pd on pp.detail = pd.name",as_list=1)
+	stack = frappe.db.sql("select pp.post_image,pp.caption, pp.is_complete,pd.facebook,pd.instagram,pd.twitter,pp.post_time from `tabPostal Post` as pp inner join `tabPost Details` as pd on pp.detail = pd.name order by pp.post_time desc",as_list=1)
 	for s in range(0,len(stack)):
 		now = datetime.strptime(frappe.utils.now(), '%Y-%m-%d %H:%M:%S.%f')
 		then = stack[s][6]
 		balance = now - then
 		bal_second = balance.total_seconds()
-		stack[s][6] = divmod(bal_second,3600)[0]
+		stack[s][6] = divmod(bal_second,3600)[0] if divmod(bal_second,3600)[0] !=0 else divmod(bal_second,3600)[1]
+		stack[s].append(True if divmod(bal_second,3600)[0] == 0 else False)
 	return stack
 
 
@@ -84,8 +84,7 @@ def stackpost():
 def post(docname):
 
 	page = frappe.get_doc("Postal Post",docname)
-
-	session = frappe.get_doc("Post Details",post.detail)
+	session = frappe.get_doc("Post Details",page.detail)
 	social = []
 	if session.twitter == 1:
 		social.append("twitter")
